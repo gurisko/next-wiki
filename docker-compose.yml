@@ -1,0 +1,32 @@
+version: '3.5'
+
+services:
+  client:
+    build:
+      context: ./client
+    environment:
+      - PORT=9000
+      - API_URL=http://server:9001/
+    ports:
+      - "9000:9000"
+    command: yarn dev
+
+  server:
+    build:
+      context: ./server
+    environment:
+      - PORT=9001
+      - MONGODB_URI=mongodb://mongo/wiki
+    ports:
+      - "9001:9001"
+    links:
+      - mongo
+    command: /usr/local/wait-for-it.sh mongo:27017 -- yarn dev
+
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - ./data/mongo:/data/mongo
