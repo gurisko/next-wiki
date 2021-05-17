@@ -28,7 +28,7 @@ router.get('/pages', validateQuery(getPagesQuerySchema), async (req, res) => {
   const query = Page.find({})
     .sort({createdAt: 1})
     .lean()
-    .toConstructor<PageDocument[]>();
+    .toConstructor();
   const [data, fullCount] = await Promise.all([
     new query().skip(start).limit(limit).exec(),
     new query().countDocuments(),
